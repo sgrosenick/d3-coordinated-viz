@@ -35,6 +35,25 @@ function setMap(){
         .await(callback);
     
     function callback(error, csvData, europe, worldCountries){
+        
+        //create graticule generator
+        var graticule = d3.geoGraticule()
+            .step([10, 10]); //place graticule lines every 5 degrees lat and long
+        
+        //create graticule background
+        var gratBackground = map.append("path")
+            .datum(graticule.outline()) //bind graticule background
+            .attr("class", "gratBackground") //assing class for styling
+            .attr("d", path) //project graticule
+        
+        //create graticlue lines
+        var gratLines = map.selectAll(".gratLines") //select graticule elements that will be covered
+            .data(graticule.lines()) //bind graticule lines to each element to be created
+            .enter() //create an element for each datum
+            .append("path") //append each element to the svg as a path element
+            .attr("class", "gratLines") //assing class for styling
+            .attr("d", path); //project graticule lines
+        
         //translate europe TopoJSON
         var europeCountries = topojson.feature(europe, europe.objects.EuropeCountries).features,
             worldBorders = topojson.feature(worldCountries, worldCountries.objects.WorldCountries);
