@@ -1,1 +1,13 @@
 /* Stylesheet by Sam Grosenick, 2017 */
+
+.countries {
+    fill: #faf0e6;
+    stroke: #0e2f44;
+    stroke-width: 1px;
+}
+
+.regions {
+    fill: #FFF;
+    stroke: #CCC;
+    stroke-width: 2px;
+}
