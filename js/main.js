@@ -1,3 +1,10 @@
+//wrap everthing in a self-executing anonymous function to move to local scope
+(function(){
+
+//pseudo-global variables
+var attrArray = ["Russian Federation", "Ukraine", "Kazakhstan", "Poland", "Romania"]; //list of attributes
+var expressed = attrArray[0]; //initial attribute
+
 //begin script when window loads
 window.onload = setMap();
 
@@ -58,6 +65,32 @@ function setMap(){
         var europeCountries = topojson.feature(europe, europe.objects.EuropeCountries).features,
             worldBorders = topojson.feature(worldCountries, worldCountries.objects.WorldCountries);
         
+        //variables for data join
+        var attrArray = ["Russian Federation", "Ukraine", "Kazakhstan", "Poland", "Romania"];
+        
+        //loop through csv to assign each set of csv attribute values to geojson region
+        for (var i=0; i<csvData.length; i++){
+            var csvRegion = csvData[i]; //the current region
+            console.log(csvRegion);
+            var csvKey = csvRegion.CountryCode; //the csv primary key
+            
+            //loop through geojson regions to find correct region
+            for (var a=0; a<europeCountries.length; a++){
+                var geojsonProps = europeCountries[a].properties; //the current region geojson properties
+                var geojsonKey = geojsonProps.CC; //the geojson primary key
+                
+                //where primary keys match, transfer csv data to geojson properties object
+                if (geojsonKey == csvKey){
+                    
+                    //assign all attributes and values
+                    attrArray.forEach(function(attr){
+                        var val = parseFloat(csvRegion[attr]); //get csv attribute values
+                        geojsonProps[attr] = val; //assign attribute and value to geojson properties
+                    });
+                };
+            };
+        };
+        
         //add world countries
         var backgroundCountries = map.append("path")
             .datum(worldBorders)
@@ -79,3 +112,4 @@ function setMap(){
         console.log(europeCountries);
     };
 };
+})();
